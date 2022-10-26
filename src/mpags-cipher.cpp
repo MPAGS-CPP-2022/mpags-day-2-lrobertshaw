@@ -3,21 +3,25 @@
 #include <string>
 #include <vector>
 
+using namespace std;
+
+string transformChar(const char in_char);
+
 int main(int argc, char* argv[])
 {
     // Convert the command-line arguments into a more easily usable form
-    const std::vector<std::string> cmdLineArgs{argv, argv + argc};
-    const std::size_t nCmdLineArgs{cmdLineArgs.size()};
+    const vector<string> cmdLineArgs{argv, argv + argc};
+    const size_t nCmdLineArgs{cmdLineArgs.size()};
 
     // Options that might be set by the command-line arguments
     bool helpRequested{false};
     bool versionRequested{false};
-    std::string inputFile{""};
-    std::string outputFile{""};
+    string inputFile{""};
+    string outputFile{""};
 
     // Process command line arguments - ignore zeroth element, as we know this
     // to be the program name and don't need to worry about it
-    for (std::size_t i{1}; i < nCmdLineArgs; ++i) {
+    for (size_t i{1}; i < nCmdLineArgs; ++i) {
         if (cmdLineArgs[i] == "-h" || cmdLineArgs[i] == "--help") {
             helpRequested = true;
         } else if (cmdLineArgs[i] == "--version") {
@@ -26,8 +30,7 @@ int main(int argc, char* argv[])
             // Handle input file option
             // Next element is filename unless "-i" is the last argument
             if (i == nCmdLineArgs - 1) {
-                std::cerr << "[error] -i requires a filename argument"
-                          << std::endl;
+                cerr << "[error] -i requires a filename argument" << endl;
                 // exit main with non-zero return to indicate failure
                 return 1;
             } else {
@@ -39,8 +42,7 @@ int main(int argc, char* argv[])
             // Handle output file option
             // Next element is filename unless "-o" is the last argument
             if (i == nCmdLineArgs - 1) {
-                std::cerr << "[error] -o requires a filename argument"
-                          << std::endl;
+                cerr << "[error] -o requires a filename argument" << endl;
                 // exit main with non-zero return to indicate failure
                 return 1;
             } else {
@@ -51,8 +53,7 @@ int main(int argc, char* argv[])
         } else {
             // Have an unknown flag to output error message and return non-zero
             // exit status to indicate failure
-            std::cerr << "[error] unknown argument '" << cmdLineArgs[i]
-                      << "'\n";
+            cerr << "[error] unknown argument '" << cmdLineArgs[i] << "'\n";
             return 1;
         }
     }
@@ -60,7 +61,7 @@ int main(int argc, char* argv[])
     // Handle help, if requested
     if (helpRequested) {
         // Line splitting for readability
-        std::cout
+        cout
             << "Usage: mpags-cipher [-h/--help] [--version] [-i <file>] [-o <file>]\n\n"
             << "Encrypts/Decrypts input alphanumeric text using classical ciphers\n\n"
             << "Available options:\n\n"
@@ -70,7 +71,7 @@ int main(int argc, char* argv[])
             << "                   Stdin will be used if not supplied\n\n"
             << "  -o FILE          Write processed text to FILE\n"
             << "                   Stdout will be used if not supplied\n\n"
-            << std::endl;
+            << endl;
         // Help requires no further action, so return from main
         // with 0 used to indicate success
         return 0;
@@ -80,77 +81,82 @@ int main(int argc, char* argv[])
     // Like help, requires no further action,
     // so return from main with zero to indicate success
     if (versionRequested) {
-        std::cout << "0.1.0" << std::endl;
+        cout << "0.1.0" << endl;
         return 0;
     }
-
-    // Initialise variables
-    char inputChar{'x'};
-    std::string inputText;
 
     // Read in user input from stdin/file
     // Warn that input file option not yet implemented
     if (!inputFile.empty()) {
-        std::cerr << "[warning] input from file ('" << inputFile
+        cerr << "[warning] input from file ('" << inputFile
                   << "') not implemented yet, using stdin\n";
     }
 
+
+    // Initialise variables
+    char inputChar{'x'};
+    string inputText{""};
     // loop over each character from user input
-    while (std::cin >> inputChar) {
-        // Uppercase alphabetic characters
-        if (std::isalpha(inputChar)) {
-            inputText += std::toupper(inputChar);
-            continue;
-        }
-
-        // Transliterate digits to English words
-        switch (inputChar) {
-            case '0':
-                inputText += "ZERO";
-                break;
-            case '1':
-                inputText += "ONE";
-                break;
-            case '2':
-                inputText += "TWO";
-                break;
-            case '3':
-                inputText += "THREE";
-                break;
-            case '4':
-                inputText += "FOUR";
-                break;
-            case '5':
-                inputText += "FIVE";
-                break;
-            case '6':
-                inputText += "SIX";
-                break;
-            case '7':
-                inputText += "SEVEN";
-                break;
-            case '8':
-                inputText += "EIGHT";
-                break;
-            case '9':
-                inputText += "NINE";
-                break;
-        }
-
-        // If the character isn't alphabetic or numeric, DONT add it
+    while (cin >> inputChar) {
+        string res = transformChar(inputChar);
+        inputText += res;
     }
 
     // Print out the transliterated text
 
     // Warn that output file option not yet implemented
     if (!outputFile.empty()) {
-        std::cerr << "[warning] output to file ('" << outputFile
+        cerr << "[warning] output to file ('" << outputFile
                   << "') not implemented yet, using stdout\n";
     }
 
-    std::cout << inputText << std::endl;
+    cout << inputText << endl;
 
     // No requirement to return from main, but we do so for clarity
     // and for consistency with other functions
     return 0;
+}
+
+
+string transformChar(const char in_char){
+
+    string output{""};
+    // Uppercase alphabetic characters
+    if (isalpha(in_char)) {
+        output += toupper(in_char);
+        return output;
+    }
+
+    // Transliterate digits to English words
+    switch (in_char) {
+        case '0':
+            return "ZERO";
+        case '1':
+            return "ONE";
+        case '2':
+            return "TWO";
+        case '3':
+            return "THREE";
+            break;
+        case '4':
+            return "FOUR";
+            break;
+        case '5':
+            return "FIVE";
+            break;
+        case '6':
+            return "SIX";
+            break;
+        case '7':
+            return "SEVEN";
+            break;
+        case '8':
+            return "EIGHT";
+            break;
+        case '9':
+            return "NINE";
+            break;
+    }
+
+// If the character isn't alphabetic or numeric, DONT add it
 }
