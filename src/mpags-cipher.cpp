@@ -1,3 +1,4 @@
+// Library imports
 #include <cctype>
 #include <iostream>
 #include <string>
@@ -5,7 +6,9 @@
 
 using namespace std;
 
+// Function definitions
 string transformChar(const char in_char);
+int processCommandLine(const vector<string>& cmdLineArgs, const int nCmdLineArgs);
 
 int main(int argc, char* argv[])
 {
@@ -13,6 +16,68 @@ int main(int argc, char* argv[])
     const vector<string> cmdLineArgs{argv, argv + argc};
     const size_t nCmdLineArgs{cmdLineArgs.size()};
 
+    processCommandLine(cmdLineArgs, nCmdLineArgs);
+
+    // Initialise variables
+    char inputChar{'x'};
+    string inputText{""};
+    // loop over each character from user input
+    while (cin >> inputChar) {
+        string res = transformChar(inputChar);
+        inputText += res;
+    }
+    cout << inputText << endl;
+
+    // No requirement to return from main, but we do so for clarity
+    // and for consistency with other functions
+    return 0;
+}
+
+
+string transformChar(const char in_char){
+
+    string output{""};
+    // Uppercase alphabetic characters
+    if (isalpha(in_char)) {
+        output += toupper(in_char);
+        return output;
+    }
+
+    // Transliterate digits to English words
+    switch (in_char) {
+        case '0':
+            return "ZERO";
+        case '1':
+            return "ONE";
+        case '2':
+            return "TWO";
+        case '3':
+            return "THREE";
+            break;
+        case '4':
+            return "FOUR";
+            break;
+        case '5':
+            return "FIVE";
+            break;
+        case '6':
+            return "SIX";
+            break;
+        case '7':
+            return "SEVEN";
+            break;
+        case '8':
+            return "EIGHT";
+            break;
+        case '9':
+            return "NINE";
+            break;
+    }
+
+// If the character isn't alphabetic or numeric, DONT add it
+}
+
+int processCommandLine(const vector<string>& cmdLineArgs, const int nCmdLineArgs){
     // Options that might be set by the command-line arguments
     bool helpRequested{false};
     bool versionRequested{false};
@@ -92,71 +157,11 @@ int main(int argc, char* argv[])
                   << "') not implemented yet, using stdin\n";
     }
 
-
-    // Initialise variables
-    char inputChar{'x'};
-    string inputText{""};
-    // loop over each character from user input
-    while (cin >> inputChar) {
-        string res = transformChar(inputChar);
-        inputText += res;
-    }
-
-    // Print out the transliterated text
-
     // Warn that output file option not yet implemented
     if (!outputFile.empty()) {
         cerr << "[warning] output to file ('" << outputFile
                   << "') not implemented yet, using stdout\n";
     }
-
-    cout << inputText << endl;
-
-    // No requirement to return from main, but we do so for clarity
-    // and for consistency with other functions
+    
     return 0;
-}
-
-
-string transformChar(const char in_char){
-
-    string output{""};
-    // Uppercase alphabetic characters
-    if (isalpha(in_char)) {
-        output += toupper(in_char);
-        return output;
-    }
-
-    // Transliterate digits to English words
-    switch (in_char) {
-        case '0':
-            return "ZERO";
-        case '1':
-            return "ONE";
-        case '2':
-            return "TWO";
-        case '3':
-            return "THREE";
-            break;
-        case '4':
-            return "FOUR";
-            break;
-        case '5':
-            return "FIVE";
-            break;
-        case '6':
-            return "SIX";
-            break;
-        case '7':
-            return "SEVEN";
-            break;
-        case '8':
-            return "EIGHT";
-            break;
-        case '9':
-            return "NINE";
-            break;
-    }
-
-// If the character isn't alphabetic or numeric, DONT add it
 }
